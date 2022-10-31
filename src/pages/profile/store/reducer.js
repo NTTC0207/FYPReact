@@ -3,11 +3,12 @@ import * as actionTypes from './actionTypes'
 
 const defaultState = {
 profileList:[],
-profileImage:[],
+profileImage:"",
 selectedFile:[],
 checkImage:false,
 online:false,
-freeProfileList:[]
+freeProfileList:[],
+change:false
 
 }
 
@@ -35,7 +36,10 @@ export default (state = defaultState, action) => {
    newState.freeProfileList =action.data
    return newState;
   }
- 
+   if(action.type === actionTypes.CHANGE){
+      newState.change = true
+      return newState;
+   }
 
    return state;
 

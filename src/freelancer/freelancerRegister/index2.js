@@ -10,11 +10,6 @@ import { apiURL } from "../../api";
 import { actionCreators } from "../../pages/profile/store";
 import { actionCreators as freeAction } from './store'
 
-import jwt_decode from "jwt-decode"; 
-const jwt2 = localStorage.getItem("jwt")
- const decode = jwt_decode(jwt2)
-
-
 
 
 const App = () => {

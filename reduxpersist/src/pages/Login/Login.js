@@ -48,7 +48,7 @@ class Login extends React.Component {
             <div className={"bg"}>
                 <div className="LoginBox">
                     <div className="left">
-                        <img src={require("../../assets/images/logo.png")} alt=""/>
+                        <img src={require("../../assets/images/logo.png")} alt="hero"/>
                     </div>
                     <div className="right">
                         <Form {...layout} name="basic" className={'forms'}

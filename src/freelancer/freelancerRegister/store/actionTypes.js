@@ -7,3 +7,5 @@ export const FTOKEN= "freelancer/updatelang/FTOsKEN"
 export const PROGRESS = "freelancer/update/progress"
 export const INTRO = "freelancer/updatelang/intro"
 export const PROPOSAL = "freelancer/updatelang/proposal"
+
+export const GETHTML = "freelancer/updatelang/gethtml"

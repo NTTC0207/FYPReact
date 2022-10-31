@@ -6,10 +6,9 @@ import {FreelancerWrapper} from './style'
 import axios from "axios";
 import {apiURL} from "../../api/index"
 import { actionCreators as freeAction } from './store' 
-
-import jwt_decode from "jwt-decode"; 
-const jwt2 = localStorage.getItem("jwt")
- const decode = jwt_decode(jwt2)
+import {actionCreators as proAction} from '../../pages/profile/store'
+import {actionCreators as loginAction} from '../../pages/login/store'
+import jwt_decode from "jwt-decode"
 
 
 const FreelancerRegister =(props)=>{
@@ -19,12 +18,12 @@ const FreelancerRegister =(props)=>{
      
      
         useEffect(()=>{
-          axios.get(apiURL+"/api/freelancerlanguage/dd/"+decode.nameid).then((res)=>{dispatch(freeAction.getProgress(res.data))})
+          axios.get(apiURL+"/api/freelancerlanguage/dd").then((res)=>{dispatch(freeAction.getProgress(res.data))})
 
         },[])
       
         useEffect(()=>{
-          axios.get(apiURL+"/api/freelancerform/"+decode.nameid).then((res)=>( dispatch(freeAction.getIntro(res.data))))
+          axios.get(apiURL+"/api/freelancerform").then((res)=>( dispatch(freeAction.getIntro(res.data))))
         },[])
       
 
@@ -33,7 +32,10 @@ const FreelancerRegister =(props)=>{
           axios.post(apiURL+"/api/login",values)
       .then((res)=>(
       
-         localStorage.setItem("jwt",res.data),
+         dispatch(loginAction.getStoreToken(jwt_decode(res.data).Roles)),
+
+         dispatch(proAction.getChange()),
+
          history.push('freelancerRegistertest/questionn1')
       
 
@@ -50,7 +52,7 @@ const FreelancerRegister =(props)=>{
 
         
     <FreelancerWrapper>
-    <Form initialValues={{   Email:decode.email  }}
+    <Form initialValues={{   Email:props.email  }}
       onFinish={onSub}
       onFinishFailed={onFinishFailed}
       autoComplete="off"
@@ -83,7 +85,8 @@ const mapStateToProps =(state) => {
     return {
   current:state.freelancerRegister.current,
   token:state.login.token,
-  progess:state.freelancerRegister.progress
+  progess:state.freelancerRegister.progress,
+  email:state.login.signInEmail
   
     }
 }

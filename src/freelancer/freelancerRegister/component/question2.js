@@ -1,14 +1,13 @@
 import React,{useEffect,useState} from "react";
 import { FreelancerWrapper, FreelancerTitle, FreelancerSubtitle, FreelanncerLangTitle } from '../style'
 import {connect,useDispatch} from 'react-redux'
-import { Divider, Form, Input,Select,Checkbox,Col,Row,Button,Steps,Progress } from 'antd';
+import { Divider, Form, Input,Select,Checkbox,Col,Row,Button,Steps,Progress ,notification} from 'antd';
 import { actionCreators as freeAction } from '../store'
 import axios from "axios";
-import {  Link ,useHistory} from 'react-router-dom'
+import {  Link ,useHistory,Redirect} from 'react-router-dom'
 import { apiURL } from '../../../api/index'
-import jwt_decode from "jwt-decode"; 
 const jwt2 = localStorage.getItem("jwt")
- const decode = jwt_decode(jwt2)
+
 
 
 const {Option} = Select;
@@ -38,7 +37,7 @@ const Question2 = (props) => {
     }
 
     useEffect(()=>{
-        axios.get(apiURL+"/api/freelancerlanguage/dd/"+decode.nameid).then((res)=>{dispatch(freeAction.getProgress(res.data))})
+        axios.get(apiURL+"/api/freelancerlanguage/dd").then((res)=>{dispatch(freeAction.getProgress(res.data))})
       
       },[])
 
@@ -65,18 +64,27 @@ console.log( e.target.value )
  }
 
  const onFinish = (values) => {
- const key= localStorage.getItem("fkey")
-axios(apiURL + "/api/subcategory/expert/"+key,
+ if(values.SubCategoryID.length > 4){
+  notification.open({
+    message: 'Maximum limit reach',
+    description:
+      'Please select maximum 4 sub-category!',
+    onClick: () => {
+      console.log('Notification Clicked!');
+    },
+  });
+ }else{ 
+axios(apiURL + "/api/subcategory/expert",
 {
   method:'POST',
   data: values
 
-}).then((res) => ( res.data==="Success" ? null: alert(res.data) ))
+}).then((res) => ( res.data==="Success" ? null: alert(res.data),dispatch(freeAction.getProgress(res.data)) ))
 .finally(history.push('/freelancerRegistertest/questionn3'))
-
-
  }
 
+ }
+   if(props.progess.profileCompleteRate === 40){
     return (
         <>
        
@@ -91,7 +99,7 @@ axios(apiURL + "/api/subcategory/expert/"+key,
               
             </Steps>
 
-      <div style={{padding:"0 10%"}}>
+      <div style={{padding:"5% 10%"}}>
       
         <FreelancerWrapper>
         <Progress percent={props.progess.profileCompleteRate} style={{float:'right',width:"200px",marginLeft:"5px"}} />
@@ -162,6 +170,13 @@ axios(apiURL + "/api/subcategory/expert/"+key,
         </div>
         </>
     )
+  }else if(props.progess.profileCompleteRate === 0){
+    return <Redirect exact="true" to="/freelancerRegistertest/questionn1" />
+  }else if(props.progess.profileCompleteRate === 70){
+    return <Redirect exact="true" to="/freelancerRegistertest/questionn3" />
+  }
+
+
 }
 
 

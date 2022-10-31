@@ -1,18 +1,24 @@
 import React, {useState,useEffect} from 'react'
-import { Layout, Menu, Switch,Avatar , Popover, Spin ,Skeleton} from 'antd';
+import { Layout, Menu, Switch,Avatar , Popover, Spin ,Skeleton,Input, Empty,List,Badge} from 'antd';
 import { Logo, SearchWrapper, SearchInfo, SearchInfoList, SearchInfoItem, NavSearch, Addition, Button, Aa, SignIn, MenuWrapper, LogIn } from './style'
 import { connect ,useDispatch} from "react-redux"
 import { actionCreators } from './store'
 import {actionCreators as Loginaction} from '../../pages/login/store/index'
 import { actionCreators as profileAction } from '../../pages/profile/store';
 import { Link , useHistory } from 'react-router-dom'
-import { UserOutlined } from '@ant-design/icons';
+import { UserOutlined,ShoppingCartOutlined  } from '@ant-design/icons';
 import  {apiURL} from '../../api/index'
+import Logo1 from '../../statics/Logo.jpeg'
 import axios from 'axios';
-import jwt_decode from "jwt-decode";
 
 
-
+const { Search } = Input;
+const count = 3
+const imgStyle={
+  objectFit:"cover",
+  width:"190px",
+  height:"40px"
+}
 
 const profilePopover={
   cursor: "pointer",
@@ -31,7 +37,7 @@ const menuItems = [
   {
     key: 'find',
 
-    label: 'Find Freelancer',
+    label: <> <Link to="/servicelist">Find Freelancer </Link> </>,
   },
   {
     key: 'post',
@@ -41,20 +47,37 @@ const menuItems = [
 
 ];
 
+const data2 = [
+  {
+    title: 'Ant Design Title 1',
+  },
+  {
+    title: 'Ant Design Title 2',
+  },
+  {
+    title: 'Ant Design Title 3',
+  },
+  {
+    title: 'Ant Design Title 4',
+  },
+];
 
 const Navigation = (props)=>{
 
-
-
- 
 const dispatch =useDispatch();
 const history = useHistory()
 
-const onLogout =()=>{
-  const jwt2 = localStorage.getItem("jwt")
-  const decode = jwt_decode(jwt2)
+const [order, setOrder]= useState([])
 
-  axios(apiURL+"/api/login/"+decode.nameid,{
+
+
+
+
+const onLogout =()=>{
+ 
+
+
+  axios(apiURL+"/api/login",{
     method:'PUT'
 
   }).then(()=>(
@@ -65,17 +88,13 @@ const onLogout =()=>{
 }
 
 
-  useEffect(()=>{
-    axios.get("https://ipapi.co/json/").then((res)=>(dispatch(Loginaction.countrydata(res.data.country_name))))
-  },[])
 
   const onChangeRole =()=>{
-    const jwt2 = localStorage.getItem("jwt")
-    const decode = jwt_decode(jwt2)
-  axios(apiURL+"/api/freelancerlanguage/"+ decode.nameid,{
+    
+  axios(apiURL+"/api/freelancerlanguage",{
     method: "POST",
   })
-  .then(()=>(history.push("/freelancerRegister")))
+  .then(()=>(   history.push("/freelancerRegister")))
   }
 
   const content = (
@@ -100,43 +119,60 @@ const onLogout =()=>{
            <Switch onChange={null} />
           </div>
         );
+
     
-        // let jwtToken = jwt
-        // let decode = "" ; 
-       
-        // {
-        // props.login ?  decode = jwt_decode(jwtToken) : decode = ""
-        // }
+    
+        const [client, setClient] =useState([])
+      const handleGet =()=>{
+
+        axios({
+          method:"GET",
+          url: apiURL+"/api/clientOrder"
+        })
+        .then((res)=>{setClient(res.data)})
+      }
+   
+      const content2 = (
+        <div style={{width: '450px',overflowY: 'scroll'}}>
+    {
+      client === null ?  <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> :null
+    }  
+     <List
+  itemLayout="horizontal"
+  dataSource={client}
+  renderItem={(item) => (
+    <List.Item     actions={[ <a key="list-loadmore-more">confirm</a>]}>
+      <List.Item.Meta
+        avatar={<Avatar src={`${apiURL}${item.userImageSrc}`} />}
+        title={item.serviceTitle}
+        description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+      />
+    </List.Item>
+  )}
+/>
+
+        </div>
+      );
       
         //React Hook 
-        const [data, setProfileImage] =useState([])
-        
+        const [data, setProfileImage] =useState("")
     
-
-
-   
         useEffect(()=>{
        
           if(props.login === true){
          
-        const jwt2 = localStorage.getItem("jwt")
-        const decode1 = jwt_decode(jwt2)
-
-            axios.get( apiURL +"/api/profile/"+decode1.nameid+ "/UploadFile" ).then((res)=>{setProfileImage(res.data)})
+            axios.get( apiURL +"/api/profileupload" ).then((res)=>(dispatch(profileAction.profileImage(res.data)) ))
           }
-       
-  
-  
-          },[props.login,props.profileImage])
+
+          },[props.login])
 
           useEffect(()=>{
 
             if(props.login === true){
           
-              const jwt2 = localStorage.getItem("jwt")
-              const decode1 = jwt_decode(jwt2)
-               if(decode1.Roles === "freelancer"){
-                axios(apiURL+"/api/profile/freelancer/"+decode1.nameid).then((res)=>( dispatch(profileAction.getFreelancerData(res.data)) ))
+          
+               if(props.role === "freelancer"){
+                axios(apiURL+"/api/profile/freelancer").then((res)=>( dispatch(profileAction.getFreelancerData(res.data)) ))
                }
 
             }
@@ -144,34 +180,29 @@ const onLogout =()=>{
 
           },[props.login])
 
-  
-       
-      
-
-     
-
-      
-     
+          const onSearch=()=>{
+            console.log('test')
+          }
   
   return(
     <div>
 
     <Header style={HeaderStyle}  >
-
-      <SearchWrapper>
-        <Link to='/'>
-          <Logo>Hires</Logo>
+ 
+      <div>
+      <Link to='/'>
+         <img alt="logo" src={Logo1} style={imgStyle}/>
         </Link>
-
+    
+       
         <Menu  style={{ display: "inline-block", width: '240px' }} mode="horizontal" items={menuItems} />
 
-
-
-      </SearchWrapper>
-
-
+        {/* <Search type="primary"  placeholder="input search text" onSearch={onSearch} style={{width:"400px",height: "40px",marginTop:"15px"}}/> */}
+    
+      </div>
 
       <Addition>
+     
         {
               props.login ? null :   <Link exact='true' to="/signUp"><SignIn >Register</SignIn></Link>
         }
@@ -179,11 +210,21 @@ const onLogout =()=>{
         {
              props.login ? null : <Link exact='true' to="/signIn"><LogIn>Login</LogIn></Link> 
         }
-       
-       
-       <Popover content={content1} trigger="click">
+     
+
+{
+  props.login ? 
+  <Popover content={content2} trigger="click">
+      
+  <Aa onClick={handleGet}>My Orders</Aa>
+
+ </Popover> :null
+}
+      
+
+       {/* <Popover content={content1} trigger="click">
        <Aa>Aa</Aa>
-       </Popover>
+       </Popover> */}
        
 
 
@@ -191,11 +232,9 @@ const onLogout =()=>{
                 props.login ?   
               
               <Popover content={content} trigger="click"  placement="bottomRight"  >
-            <Avatar size="large" src={`${apiURL}${data.src}`} icon={<UserOutlined />} />
+            <Avatar size="large" src={`${apiURL}${props.profileImage}`} icon={<UserOutlined />} />
               </Popover>
              
-              
-              
               : null
         }
        
@@ -215,7 +254,8 @@ const mapStateToProps = (state) => {
     focused: state.navigation.focused,
     login:state.login.login,
     profileImage:state.profile.profileImage,
-    freeProfileList:state.profile.freeProfileList
+    freeProfileList:state.profile.freeProfileList,
+    role:state.login.role
   }
 }
 

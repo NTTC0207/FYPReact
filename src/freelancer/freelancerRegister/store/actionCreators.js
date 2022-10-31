@@ -1,6 +1,9 @@
 import * as actionTypes from './actionTypes'
 
-
+export const getHTML =(data)=>({
+    type:actionTypes.GETHTML,
+    data
+})
 
 export const getIntro=(data)=>({
     type:actionTypes.INTRO,

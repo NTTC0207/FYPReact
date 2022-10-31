@@ -8,5 +8,6 @@
    export const GETCHECKIMAGE="profile/getcheckimage"
 
    export const FRELANCERDATA = "profile/freelancceerdata" 
+   export const CHANGE= "profile/change" 
 
 
