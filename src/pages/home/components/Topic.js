@@ -12,7 +12,7 @@ class Topic extends React.Component {
                          
                         <TopicItem key={item.id}>
                       
-                        <img className="item-pic" src={item.imgUrl} alt="" />
+                        <img className="item-pic" src={item.imgUrl} alt="item" />
                         {item.title}
                       </TopicItem>
                         )

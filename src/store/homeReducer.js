@@ -5,6 +5,7 @@ import {reducer as homeReducer} from '../pages/home/store/'
 import {reducer as detailReducer} from '../pages/detail/store'
 import {reducer as loginReducer} from '../pages/login/store'
 import {reducer as navigationReducer} from '../common/navigation/store'
+import {reducer as serviceListReducer} from '../pages/serviceList/store'
 import {reducer as profileReducer} from '../pages/profile/store'
 import {reducer as freelancerRegisterReducer} from '../freelancer/freelancerRegister/store'
 import thunk from 'redux-thunk'
@@ -20,6 +21,7 @@ const reducer= {
     login:loginReducer,
     profile:profileReducer,
     freelancerRegister:freelancerRegisterReducer,
+    service:serviceListReducer,
  
 }
 

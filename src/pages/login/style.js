@@ -1,5 +1,6 @@
 import styled from "styled-components"
 import LoginPic from '../../statics/Login.jpg'
+import work from '../../statics/work.jpg'
 
 export const LoginWrapper = styled.div`
 z-index:0;
@@ -149,8 +150,9 @@ color: white;
 `
 export const AppAside =styled.div`
 width: 50%;
-background: url(${LoginPic});
+background: url(${work});
 background-size:cover;
+opacity:1;
 `
 export const AppForm =styled.div`
 width: 50%;

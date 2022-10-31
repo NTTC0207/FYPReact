@@ -6,7 +6,11 @@ import styled from "styled-components"
 export const ProfileWrapper = styled.div`  
 
 `
-
+export const PRequest = styled.div`  
+.ant-modal-confirm .ant-modal-confirm-btns{
+    display:none !important;
+}
+`
 
 
 //sub component

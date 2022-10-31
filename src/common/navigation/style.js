@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import Logo1 from '../../statics/Logo.jpeg'
 
 
 export const HeaderWrapper = styled.div`
@@ -13,20 +14,22 @@ border-bottom:1px solid #f0f0f0
 
 export const Logo = styled.div`
 
-
-font-size:40px;
-float: left;
-width: 120px;
-height: 31px;
-background: rgba(255, 255, 255, 0.3);
+// object-fit: cover;
+// background-repeat: no-repeat;
+// float: left;
+// width: 1000px;
+// height: 100px;
+// background-image:url(${Logo1})
 
 `
+
+
 
 
 export const SearchWrapper= styled.div`
 
 position:relative;
-wifth:100%;
+width:100%;
 top:0;
 height:56px;
 

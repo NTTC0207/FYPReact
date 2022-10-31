@@ -25,3 +25,9 @@ return(dispatch)=>{
 }
 }
 
+
+export const getSlick =(data)=>({
+    type:actionTypes.GETSLICK,
+    data
+})
+    

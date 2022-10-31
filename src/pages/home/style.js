@@ -1,5 +1,6 @@
 import styled from "styled-components"
 import BannerPic from "../../statics/banner.png"
+import logoMan from '../../statics/logoMan.png'
 
 
 export const HomeWrapper =styled.div`
@@ -208,13 +209,13 @@ left:40%;
 
 export const HeroFigure= styled.div`
 position:absolute;
-right:0;
-width:30%;
+right:5%;
+width:35%;
 bottom:0;
 top:0;
 background-size:cover;
 background-repeat:no-repeat;
-background-image: url(https://res.cloudinary.com/gurucom/image/upload/w_450,f_auto/static/homepage/bannerguy.png)
+ background-image: url(${logoMan})
 
 `
 

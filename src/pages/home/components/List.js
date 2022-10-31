@@ -14,7 +14,7 @@ class List extends React.Component {
                         return (   
                             <Link key={index} to={'/detail/' +item.id}  > 
                         <ListItem key={item.id}>
-                            <img className="listPic" src={pic} alt="" />
+                            <img className="listPic" src={pic} alt="article" />
                             <ListInfo>
                             <h3 className="title">{item.title}</h3>
                             <p className="desc">{item.desc}</p>

@@ -6,7 +6,7 @@ import { apiURL } from '../../../api/index'
 
 
 
-const profileList = (data) => ({
+export const profileList = (data) => ({
     type: actionTypes.GETPROFILELIST,
     data
 })
@@ -54,10 +54,10 @@ export const getProfileImage = (token) => {
 
 export const getUploadImage = (props, token) => {
     return (dispatch) => {
-
+    
         const data = new FormData()
         data.append('files', props)
-        console.log(data)
+        console.log(props)
 
         let url = apiURL + "/api/ProfileUpload/" + token;
 
@@ -107,4 +107,7 @@ export const getFreelancerData =(data)=>({
     data
 })
 
-
+export const getChange =()=>({
+    type:actionTypes.CHANGE,
+   
+})

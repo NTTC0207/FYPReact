@@ -4,12 +4,13 @@ import  * as actionTypes from './actionTypes'
 const defaultState = {
    //common
    loader: false,
+  
    //login
    login: false,
    signInEmail: "",
    signInPassword: "",
    redirectHome:false,
-   token:"",
+   role:"",
  
    //SignUP
    country: [],
@@ -43,7 +44,7 @@ export default (state = defaultState, action) => {
       return newState
    }
    if(action.type === actionTypes.TOKENSTORE){
-      newState.token = action.data
+      newState.role = action.data
       return newState
    }
 

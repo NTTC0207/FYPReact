@@ -9,7 +9,8 @@ userSelect:[],
 ftoken:[],
 progress:[],
 introduction:[],
-uploadProposal:[]
+uploadProposal:[],
+html:""
 
    }
    
@@ -50,6 +51,10 @@ uploadProposal:[]
   if(action.type=== actionTypes.PROPOSAL){
     newState.uploadProposal =action.data
     return newState;
+  }
+  if(action.type=== actionTypes.GETHTML){
+    newState.html = action.data
+    return newState
   }
 
      return state;

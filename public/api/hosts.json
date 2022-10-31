@@ -1,0 +1,4 @@
+{
+    "success": true,
+    "InfeedTu":{"code":"0","msg":"调用房功","errMsg":null,"timestamp":"2022-09-07 15:20:17.156","data":[{"containerBarcode":"JJ09904035","assWorkOrderName":null,"itemCode":"17131000019343","assScheduledStartDate":null,"itemDesc":"显控濿 XKB-0377 200366.5mm LED 绿济触摸-日常 BCD-545WKGPZM RoHS","assLineCode":null,"checkResult":"UNCHECK","orgId":"5040","labelNo":"LB62220817000033","lineCode":"PDZ1DI0005","uom":null,"reqQty":"2000","qty":"15.0000000000","workOrderName":"SL2208170018","holdField":null}]}
+}

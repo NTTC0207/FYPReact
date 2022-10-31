@@ -6,7 +6,8 @@ import "slick-carousel/slick/slick-theme.css";
 import {SliderWrapper, SliderTitle,Slide,SliderName} from '../style'
 import {apiURL} from '../../../api/index'
 import axios from 'axios'
-import {connect} from 'react-redux'
+import {Link} from 'react-router-dom'
+import {connect,useDispatch} from 'react-redux'
 import {Skeleton} from 'antd'
 import * as actionCreators from '../store/actionCreators'
 
@@ -32,7 +33,8 @@ const skeletonClass=()=>{
 
 
 
-const SlickSlider =(props)=>{
+const SlickSlider =(props1)=>{
+  const dispatch = useDispatch();
   const SlickArrowLeft = ({ currentSlide, slideCount, ...props }) => (
     <div   {...props} />
   );
@@ -54,18 +56,25 @@ const SlickSlider =(props)=>{
   //React Hook
 
   const [data,setCategory] =useState([])
-  const [loading, setLoading]=useState(true)
+  const [loading, setLoading]=useState(false)
+
+  
 
   useEffect(()=>{
     (async()=>{
+      
     try{
+
+
+      setLoading(true)
     axios.get( apiURL+"/api/category" ).then((res)=>{
-      setCategory(res.data) 
+      dispatch(actionCreators.getSlick(res.data)) 
     if(res.status===200){
          setLoading(false)
     }
     })
-    
+
+ 
     
     }
     catch(error){
@@ -89,7 +98,7 @@ const SlickSlider =(props)=>{
       loading  ?   skeletonClass() : <Slider  {...settings} className="card__container--inner">
       
       {
-       data.map((item)=>{
+       props1.slickList.map((item)=>{
          return(
            <div
             key={item.categoryID}
@@ -99,9 +108,9 @@ const SlickSlider =(props)=>{
           {item.categoryName}
             </SliderName>
            
-   
-             <img  src={`${apiURL}${item.categorySrc}`} alt="hero_img" />
-           
+           <Link key={item.categoryID} to={'/servicelistcate/'+item.categoryID} >
+             <img   src={`${apiURL}${item.categorySrc}`} alt="hero_img" />
+             </Link>
          
            </div>
          )
@@ -126,4 +135,10 @@ const SlickSlider =(props)=>{
 
 
 
-export default SlickSlider
+const mapStateToProps = (state) =>{
+  return{
+   slickList:state.home.slickList
+  }
+}
+
+export default connect (mapStateToProps,null) (SlickSlider)

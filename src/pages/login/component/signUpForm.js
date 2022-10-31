@@ -7,6 +7,7 @@ import { withRouter } from 'react-router-dom'
 import { Form, Input } from 'antd';
 // import {EyeOutlined,EyeInvisibleOutlined } from '@ant-design/icons'
 import { Alert } from 'antd';
+import axios from 'axios'
 import Loading from 'react-fullscreen-loading';
 import { AppWrapper, AppAside, AppForm,  FormTitle } from '../style'
 
@@ -24,7 +25,7 @@ const  SignUpForm=(props)=>{
   const [country,setCountry]=useState([]);
 
 //   useEffect(()=>{
-// axios.get("https://ipapi.co/json/").then((res)=>(setCountry(res.data.country_name),dispatch(actionCreators.countrydata(res.data.country_name))))
+// axios.get("https://ipapi.co/json/").then((res)=>(console.log(res.data.country_name),dispatch(actionCreators.countrydata(res.data.country_name))))
 
 //   },[])
 
@@ -52,9 +53,9 @@ const  SignUpForm=(props)=>{
        
       
         
-          <Form.Item name="country" hidden >
+          {/* <Form.Item name="country"  >
             <Input  value={props.country}  />
-          </Form.Item>
+          </Form.Item> */}
 
 
         <FormField>
@@ -94,8 +95,8 @@ const  SignUpForm=(props)=>{
 
 
         <FormFieldButton  >Sign Up</FormFieldButton>{" "}
-        <Link to="/sign-in" className="formFieldLink">
-          I'm already member
+        <Link to="/signIn" className="formFieldLink">
+         <span style={{ marginLeft: "5px" }}>I'm already member</span> 
         </Link>
       </Form>
 
@@ -106,9 +107,6 @@ const  SignUpForm=(props)=>{
     </AppWrapper>
   )
 }
-
-
-
 
 
 const mapStateToProps = (state) => {
@@ -122,15 +120,11 @@ const mapStateToProps = (state) => {
     loader: state.login.loader,
     country: state.login.country,
  
-
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    // CountryName(){
-    // dispatch(actionCreators.getCountryList())
-    // },
     handleSignUpEmailChange(e) {
       dispatch(actionCreators.getSignUpEmail(e.target.value))
     },

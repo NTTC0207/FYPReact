@@ -49,8 +49,8 @@ class SignInForm extends React.Component {
         </FormField>
 
         <FormFieldButton >Login</FormFieldButton>
-        <Link to="/sign-up" className="formFieldLink">
-          Create an account
+        <Link to="/signUp" className="formFieldLink">
+         <span style={{marginLeft:"5px"}}>Create an account</span> 
         </Link>
 
 

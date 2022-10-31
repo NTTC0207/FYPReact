@@ -1,7 +1,7 @@
-import React from 'react';
-import { Layout, Divider, Avatar, Button, Modal, Badge} from 'antd'
+import React,{ useState,useEffect} from 'react';
+import { Layout, Divider, Avatar, Button, Modal, Badge,Upload,message, Form} from 'antd'
 import { UserOutlined  ,FlagOutlined } from '@ant-design/icons';
-import { connect } from 'react-redux'
+import { connect,useDispatch } from 'react-redux'
 import { actionCreators } from '../store'
 import { actionCreators as loaderActionCreators } from '../../login/store';
 import { UploadOutlined, CalendarOutlined } from '@ant-design/icons';
@@ -10,108 +10,157 @@ import moment from 'moment';
 import { ProfileLabelWrapper,ProfileLabelWrapperAdjust, ProfileLabel, ProfileLabelName, UserCard, TextWrapper,  TextLabel,  UserProfileInfo, UserProfileImage, UserProfileName } from "../style"
 import {apiURL} from '../../../api/index'
 import "../../../scss/main.scss"
-import jwt_decode from "jwt-decode"; 
+import axios from 'axios';
 
 const jwt2 = localStorage.getItem("jwt")
-const decode = jwt_decode(jwt2)
 
-
-
+const style={
+  display: "none",
+}
 const { Content } = Layout
 
+const UserInfo=(props)=>{
 
+  const dispatch = useDispatch();
+  const [fileList, setFileList] = useState([]);
 
-class UserInfo extends React.Component {
-  render() {
+  const format2 = "MMM YYYY"
+  var date2 = new Date(props.profileList.dateRegister);
+  const dateTime2 = moment(date2).format(format2);
+  const props1 = {
+    listType: 'picture',
+ 
+
+};
+
+  const info = () => {
+    Modal.info({
+      title: 'Upload user Profile Picture',
+      okButtonProps:{style},
+      okCancel:true,
+      content: (
+        <div style={{ padding: "10px" }}>
+          <Form onFinish={onFinish}>
+            <Form.Item name="files">
+         <Upload {...props1}   maxCount={1} >       
+               <Button icon={<UploadOutlined />}>Upload Picture or Video</Button>
+          </Upload>
+          </Form.Item>
+          <Button type="primary" htmlType="submit">
+                Submit
+         </Button>
+
+          </Form>
+        </div>
+      ),
 
     
-    const format2 = "MMM YYYY"
-    var date2 = new Date(this.props.profileList.dateRegister);
-    const dateTime2 = moment(date2).format(format2);
+    });
+  };
 
+const onFinish = (val) => {
+console.log(val)
+console.log(val.files.file.originFileObj)
 
-    const info = () => {
-      Modal.info({
-        title: 'Upload user Profile Picture',
-        content: (
-          <div style={{ padding: "10px" }}>
-            <input type="file" onChange={this.props.handleInputChange} />
+const formData = new FormData();
+formData.append('files', val.files.file.originFileObj);
+axios({
+  method:'PUT',
+  url:apiURL +"/api/profileupload",
+  data:formData
+})
+.then((res)=>(
+ axios({
+  method:'GET',
+  url:apiURL +"/api/profileupload"
+ })
+ .then((res)=>(console.log(res.data),dispatch(actionCreators.profileImage(res.data))))
 
-            <Button type="submit" onClick={() => this.props.submit(this.props.selectedFile)} icon={<UploadOutlined />}>Upload</Button>
-
-          </div>
-        ),
-
-        onOk() { },
-      });
-    };
-
-
-
-    return (
-    <>
-         
-
-              <UserCard>
-
-                <UserProfileInfo>
-                  <div>
-                    <UserProfileImage>  
-                      <Badge color={this.props.profileList.online ? "#38ff6d" : null } style={{ width: "20px" ,height: "20px",position: "absolute",right:"21px",top:"105px"}} dot={true}>
-                      <Avatar onClick={info} src={`${apiURL}${this.props.profileImage}`} size={120} icon={<UserOutlined />} />
-                      </Badge> 
-                    </UserProfileImage>
-                    <UserProfileName>
-                      <p className="username"> {this.props.profileList.userName}</p>
-                    </UserProfileName>
-                    <Button block>Preview Profile</Button>
-                    <Divider />
-                    <div>
-
-                    </div>
-
-                    <ProfileLabelWrapper>
-                      <ProfileLabelWrapperAdjust>
-                      <ProfileLabel ><UserOutlined />Name:</ProfileLabel>
-                      <ProfileLabelName>{this.props.profileList.userName}</ProfileLabelName>
-                      </ProfileLabelWrapperAdjust>
-                    </ProfileLabelWrapper>
-                    <ProfileLabelWrapper>
-                    <ProfileLabelWrapperAdjust>
-                      <ProfileLabel><CalendarOutlined />Registered at:</ProfileLabel>
-                      <ProfileLabelName>{dateTime2}</ProfileLabelName>
-                      </ProfileLabelWrapperAdjust>
-                    </ProfileLabelWrapper>
-                    <ProfileLabelWrapper>
-                    <ProfileLabelWrapperAdjust>
-                      <ProfileLabel><FlagOutlined />Country:</ProfileLabel>
-                      <ProfileLabelName>{this.props.profileList.country}</ProfileLabelName>
-                      </ProfileLabelWrapperAdjust>
-                    </ProfileLabelWrapper>
-                    
-
-                  </div>
-                </UserProfileInfo>
-
-              </UserCard>
-
-
-            
-      
-        <Loading loading={this.props.loader} background="transparent" loaderColor="#3498db" />
-
-        </>
-    )
-
-  }
-
-  componentDidMount() {
-    const token = decode.nameid
-    this.props.getUserProfile(token)
-    this.props.getUserImage(token)
-  }
+  ,Modal.destroyAll() 
+  
+  ))
 
 }
+
+
+
+useEffect(() => {
+
+  axios({
+    method:"GET",
+    url:apiURL +"/api/profileupload"
+  })
+  .then((res)=>{dispatch(actionCreators.profileImage(res.data))})
+},[])
+
+useEffect(() => {
+axios({
+  method:"GET",
+  url:apiURL +"/api/profile"
+})
+.then((res)=>{dispatch(actionCreators.profileList(res.data))})
+},[])
+
+return(
+  <>
+      <UserCard>
+
+<UserProfileInfo>
+  <div>
+    <UserProfileImage>  
+      <Badge color={props.profileList.online ? "#38ff6d" : null } style={{ width: "20px" ,height: "20px",position: "absolute",right:"21px",top:"105px"}} dot={true}>
+      <Avatar onClick={info} src={`${apiURL}${props.profileImage}`} size={120} icon={<UserOutlined />} />
+      </Badge> 
+    </UserProfileImage>
+ 
+
+
+
+
+
+    <UserProfileName>
+      <p className="username"> {props.profileList.userName}</p>
+    </UserProfileName>
+    <Button block>Preview Profile</Button>
+    <Divider />
+    <div>
+
+    </div>
+
+    <ProfileLabelWrapper>
+      <ProfileLabelWrapperAdjust>
+      <ProfileLabel ><UserOutlined />Name:</ProfileLabel>
+      <ProfileLabelName>{props.profileList.userName}</ProfileLabelName>
+      </ProfileLabelWrapperAdjust>
+    </ProfileLabelWrapper>
+    <ProfileLabelWrapper>
+    <ProfileLabelWrapperAdjust>
+      <ProfileLabel><CalendarOutlined />Registered at:</ProfileLabel>
+      <ProfileLabelName>{dateTime2}</ProfileLabelName>
+      </ProfileLabelWrapperAdjust>
+    </ProfileLabelWrapper>
+    <ProfileLabelWrapper>
+    <ProfileLabelWrapperAdjust>
+      <ProfileLabel><FlagOutlined />Country:</ProfileLabel>
+      <ProfileLabelName>{props.profileList.country}</ProfileLabelName>
+      </ProfileLabelWrapperAdjust>
+    </ProfileLabelWrapper>
+    
+
+  </div>
+</UserProfileInfo>
+
+</UserCard>
+
+
+
+
+<Loading loading={props.loader} background="transparent" loaderColor="#3498db" />
+  </>
+)
+}
+
+
 
 
 const mapStateToProps = (state) => {
@@ -142,12 +191,6 @@ const mapDispatchToProps = (dispatch) => {
     handleInputChange(e) {
       dispatch(actionCreators.getInput(e.target.files[0]))
 
-    },
-    submit(props) {
-
-
-      dispatch(loaderActionCreators.getLoader())
-      dispatch(actionCreators.getUploadImage(props, decode.nameid))
     }
 
   }

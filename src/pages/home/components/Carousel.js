@@ -30,8 +30,8 @@ class Carousel1 extends React.Component {
             <Fragment>
                 <Carousel autoplay className={carouselStyle}>
                   
-    <div>
-    <img style={carouselImage} src={Picture1} />
+    {/* <div>
+    <img  style={carouselImage} src={Picture1} />
     
     </div>
     <div>
@@ -45,7 +45,7 @@ class Carousel1 extends React.Component {
     <div>
     <img style={carouselImage} src={Picture4} />
      
-    </div>
+    </div> */}
   </Carousel>
             </Fragment>
         )

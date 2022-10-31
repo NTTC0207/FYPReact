@@ -1,21 +1,21 @@
 import React, { useState, useEffect, useCallback, useLayoutEffect } from "react";
 import { Divider, Form, Input, Table, Steps, Space, Button, Modal, Select ,Progress} from 'antd';
 import { FreelancerWrapper, FreelancerTitle, FreelancerSubtitle, FreelanncerLangTitle } from '../style'
-import {  Link,useHistory} from 'react-router-dom'
+import {  Link,useHistory,Redirect} from 'react-router-dom'
 import axios from 'axios'
 import { apiURL } from '../../../api/index'
 import { connect, useDispatch } from "react-redux"
 import { actionCreators } from '../store/index'
 import _ from 'lodash';
 import { actionCreators as freeAction } from '../store'
-import jwt_decode from "jwt-decode";
-// ES6 Modules or TypeScript
-
-// CommonJS
-const jwt2 = localStorage.getItem("jwt")
-const decode = jwt_decode(jwt2)
 
 
+
+
+
+const gone ={
+  display:"none"
+}
 //loadash
 const destroyAll = () => {
   Modal.destroyAll();
@@ -40,7 +40,7 @@ const Question1 = (props) => {
 
   useEffect(() => {
 
-    axios.get(apiURL + "/api/freelancerlanguage/" + decode.nameid)
+    axios.get(apiURL + "/api/freelancerlanguage" )
       .then((res) => (setLanguage(res.data), dispatch(actionCreators.getLang(res.data))))
 
 
@@ -49,21 +49,19 @@ const Question1 = (props) => {
   useEffect(() => {
 
 
-    axios.get(apiURL + "/api/language")
+    axios.get(apiURL + "/api/language/ksd")
       .then((res) => (setLang(res.data), dispatch(actionCreators.getSelecctLang(res.data))))
 
 
   }, [])
   useEffect(() => {
-    axios.get(apiURL + "/api/language/" + decode.nameid)
+    axios.get(apiURL + "/api/language")
       .then((res) => (setReal(res.data), dispatch(actionCreators.getReal(res.data))))
       .catch((error) => { console.log(error) })
   }, [])
 
   //get fid
-  useEffect(() => {
-    axios.get(apiURL + "/api/freelancerlanguage/fid/" + decode.nameid).then((res) => (dispatch(actionCreators.getFtoken(res.data)), localStorage.setItem("fkey", res.data[0].freelancerID)))
-  }, [])
+
 
 
   useEffect(() => {
@@ -72,29 +70,30 @@ const Question1 = (props) => {
 
 //load
 useEffect(()=>{
-  axios.get(apiURL+"/api/freelancerlanguage/dd/"+decode.nameid).then((res)=>{dispatch(freeAction.getProgress(res.data))})
+  axios.get(apiURL+"/api/freelancerlanguage/dd").then((res)=>{dispatch(freeAction.getProgress(res.data))})
 
 },[])
 
 useEffect(()=>{
-  axios.get(apiURL+"/api/freelancerform/"+decode.nameid).then((res)=>( dispatch(freeAction.getIntro(res.data))))
+  axios.get(apiURL+"/api/freelancerform").then((res)=>( dispatch(freeAction.getIntro(res.data))))
 },[])
 
 
   const [isSending, setIsSending] = useState(false)
-  const deleteLanguage = useCallback(async (key) => {
+  const deleteLanguage = useCallback(async (key) => 
+  {
 
     // don't send again while we are sending
     if (isSending) return
     // // update state
     setIsSending(true)
     // // send the actual request
-    await axios.delete(apiURL + "/api/freelancerlanguage/" + decode.nameid+ "/" + key)
+    await axios.delete(apiURL + "/api/freelancerlanguage/" + key)
       .then((() => {
 
-        axios.get(apiURL + "/api/freelancerlanguage/" + decode.nameid)
+        axios.get(apiURL + "/api/freelancerlanguage")
           .then((res) => (setLanguage(res.data), dispatch(actionCreators.updateLang(res.data))))
-        axios.get(apiURL + "/api/language/" + decode.nameid)
+        axios.get(apiURL + "/api/language" )
           .then((res) => (setReal(res.data), dispatch(actionCreators.getReal(res.data))))
       }))
     // // once the request is sent, update state again
@@ -128,17 +127,16 @@ useEffect(()=>{
   const [form] = Form.useForm();
 
   const onFinish = (values) => {
-    const fid = localStorage.getItem('fkey')
+    
 
-
-    axios.post(apiURL + "/api/language/" + fid, values).then(
+    axios.post(apiURL + "/api/language" , values).then(
 
       (res) => (
         onReset,
-        axios.get(apiURL + "/api/freelancerlanguage/" + decode.nameid)
+        axios.get(apiURL + "/api/freelancerlanguage")
           .then((res) => (setLanguage(res.data), dispatch(actionCreators.getLang(res.data))))
 
-        , axios.get(apiURL + "/api/language/" + decode.nameid)
+        , axios.get(apiURL + "/api/language" )
           .then((res) => (setReal(res.data), dispatch(actionCreators.getReal(res.data))))
       ))
       .finally(form.resetFields)
@@ -152,15 +150,15 @@ useEffect(()=>{
 
   const showConfirm = () => {
     confirm({
-      title: 'Do you Want to delete these items?',
-
+      title: 'Select your best language',
+      okButtonProps:{gone},
       content: (
         <>
-          <Form form={form} {...layout} name="control-hooks" initialValues={{ FreelancerID: props.ftoken[0].freelancerID }} onFinish={onFinish} >
-            <Form.Item name="FreelancerID" >
-              <Input hidden />
+          <Form form={form} {...layout} name="control-hooks"  onFinish={onFinish} >
+            {/* <Form.Item name="FreelancerID" >
+              <Input  />
 
-            </Form.Item>
+            </Form.Item> */}
             <Form.Item name="LanguageID" rules={[{ required: true, },]}>
               <Select placeholder="Select your best Language" allowClear >
                 {
@@ -213,14 +211,14 @@ useEffect(()=>{
   const SubmitDes = (values) => {
 
 
-    axios(apiURL + "/api/freelancerform/" + decode.nameid,
+    axios(apiURL + "/api/freelancerform" ,
       {
         method: 'put',
         data: values
 
       })
       .then(() => (
-        axios.get(apiURL + "/api/freelancerlanguage/dd/" + decode.nameid).then((res) => ( dispatch(freeAction.getProgress(res.data)) ))
+        axios.get(apiURL + "/api/freelancerlanguage/dd").then((res) => ( dispatch(freeAction.getProgress(res.data)) ))
         
         , history.push("/freelancerRegistertest/questionn2")
 
@@ -257,7 +255,7 @@ useEffect(()=>{
       ),
     },
   ];
-
+  if(props.progess.profileCompleteRate === 0){
   return (
     <>
 
@@ -301,6 +299,16 @@ useEffect(()=>{
 </div>
     </>
   )
+}else if(props.progess.profileCompleteRate === 40){
+  return <Redirect exact="true" to="/freelancerRegistertest/questionn2" />
+}else if(props.progess.profileCompleteRate === 70){
+  return <Redirect exact="true" to="/freelancerRegistertest/questionn3" />
+}else{
+  return <Redirect exact="true" to="/unauthorized" />
+}
+
+  
+ 
 }
 
 const mapStateToProps = (state) => {

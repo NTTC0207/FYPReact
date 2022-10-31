@@ -4,18 +4,13 @@ import { UploadOutlined } from '@ant-design/icons';
 import {connect,useDispatch} from 'react-redux'
 import { Divider, Form, Input,Select,Steps,Progress,Button,Space,Upload,Tooltip, message } from 'antd';
 import { actionCreators as freeAction } from '../store'
+import {actionCreators as proAction} from '../../../pages/profile/store'
 import axios from "axios";
-import {  Link ,useHistory} from 'react-router-dom'
+import {  Link ,useHistory,Redirect} from 'react-router-dom'
 import { apiURL } from '../../../api/index'
-import jwt_decode from "jwt-decode"; 
-const jwt2 = localStorage.getItem("jwt")
- const decode = jwt_decode(jwt2)
-
 
 
 const { Dragger } = Upload;
-const fkey1 = localStorage.getItem('fkey');
-const uploadURL = apiURL + '/api/freelancerform3/' +fkey1;
 
 const layout = {
     labelCol: {
@@ -32,7 +27,7 @@ const Question3 =(props)=>{
     const [uploading, setUploading] = useState(false);
 
     useEffect(()=>{
-        axios.get(apiURL+"/api/freelancerlanguage/dd/"+decode.nameid).then((res)=>{dispatch(freeAction.getProgress(res.data))})
+        axios.get(apiURL+"/api/freelancerlanguage/dd").then((res)=>{dispatch(freeAction.getProgress(res.data))})
       
       },[])
 
@@ -42,10 +37,12 @@ const handleUpload = () => {
     fileList.forEach((file) => {
       formData.append('files', file);
     });
+    console.log(formData)
     setUploading(true); // You can use any AJAX library you like
 
-    axios(uploadURL, {
+    axios({
       method: 'POST',
+       url: apiURL+"/api/freelancerform3",
       data: formData,
     })
       .then((res) => {
@@ -56,6 +53,13 @@ const handleUpload = () => {
         }
     
         alert(res.data)
+
+      axios({
+        method: 'GET',
+        url:apiURL + '/api/profile/freelancer'
+      })
+      .then((res)=>{dispatch(proAction.getFreelancerData(res.data))})
+
       })
       .catch(() => {
         message.error('upload failed.');
@@ -79,6 +83,7 @@ const handleUpload = () => {
     },
   fileList,
   };
+  if(props.progess.profileCompleteRate === 70){
     return(
         <>
         <Steps
@@ -92,7 +97,7 @@ const handleUpload = () => {
               
             </Steps>
 
-            <div style={{padding:"0 10%"}}>
+            <div style={{padding:"5% 10%"}}>
             {/* props.progess.profileCompleteRate */}
         
     <FreelancerWrapper>
@@ -149,6 +154,11 @@ const handleUpload = () => {
 
         </>
     )
+  }else if(props.progess.profileCompleteRate === 40){
+    return <Redirect exact="true" to="/freelancerRegistertest/questionn2" />
+  }else if(props.progess.profileCompleteRate === 0){
+    return <Redirect exact="true" to="/freelancerRegistertest/questionn1" />
+  }
 }
 
 const mapStateToProps = (state)=>{
